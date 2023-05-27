@@ -30,6 +30,7 @@ export type IDataContext = {
   name: string;
   ClassesData: IClassContents;
   ClassesKeyNames: string[];
+  AvailableProperties: string[];
   calculationFun: (
     method: string,
     dataProperty: string,
@@ -46,6 +47,7 @@ interface IUtilityFunctions {
 
 const ClassesData: IClassContents = {};
 const ClassesKeyNames: string[] = [];
+const AvailableProperties: string[] = Object.keys(JSONData[0]) as string[];
 
 // base function to seperate out class wise data;
 (function () {
@@ -161,6 +163,7 @@ export const DataProviderContexts = ({ children }: DataContextsProps) => {
         name: "Data Table",
         ClassesData,
         ClassesKeyNames,
+        AvailableProperties,
         calculationFun,
       }}
     >

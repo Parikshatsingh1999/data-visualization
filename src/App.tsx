@@ -8,7 +8,7 @@ function App() {
       <h1> ManuFac </h1>
       <h3> Data Visualization App </h3>
       <DataProviderContexts>
-        <DataTable keyToCalculate="Flavanoids" />
+        <DataTable keyToCalculate="Flavanoids" showChange={true} />
         <DataTable keyToCalculate="Gamma" />
       </DataProviderContexts>
     </div>
