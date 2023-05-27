@@ -4,7 +4,7 @@ Didnt put much effort on css, used plain tables.
 
 ## Setup
 
-Just clone the source code, naviagte to data-visulization directory, and run yarn install , then run yarn start and you are good to go.
+Just clone the source code, naviagte to data-visualization directory, and run yarn install , then run yarn start and you are good to go.
 
 ## Hosted link
 
