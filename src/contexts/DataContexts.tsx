@@ -73,7 +73,8 @@ const resultCaching: ICacheResult = {};
 // A function to attach any new property based on any method.
 const additionalProperties: any = {
   Gamma: (item: ISingleClassData) => {
-    return (item.Ash * item.Hue) / item.Magnesium;
+    const gamma = (item.Ash * item.Hue) / item.Magnesium;
+    return gamma;
   },
 };
 
@@ -81,6 +82,16 @@ export const DataContext = createContext<IDataContext | null>(null);
 
 // main context creater. Using faccade pattern, to cap all base/ logical code.
 export const DataProviderContexts = ({ children }: DataContextsProps) => {
+  const getData = (key: string, className: string) => {
+    let data;
+    if (resultCaching[className]?.[key]) {
+      data = resultCaching[className]?.[key];
+    } else {
+      data = getClassWiseDataForProperty(key, className);
+    }
+    return JSON.parse(JSON.stringify(data));
+  };
+
   const getClassWiseDataForProperty = (property: string, className: string) => {
     const data = ClassesData[className]?.map((item) => {
       if (item[property]) {
@@ -89,7 +100,11 @@ export const DataProviderContexts = ({ children }: DataContextsProps) => {
         return additionalProperties[property]?.(item) || 0;
       }
     });
-    resultCaching[className] = { [property]: data };
+    if (resultCaching[className]) {
+      resultCaching[className][property] = data;
+    } else {
+      resultCaching[className] = { [property]: data };
+    }
     return data;
   };
 
@@ -97,13 +112,7 @@ export const DataProviderContexts = ({ children }: DataContextsProps) => {
   const UtilityFunctions: IUtilityFunctions = {
     // to find mode
     mode: (key: string, className: string) => {
-      let data;
-      if (resultCaching[className]?.[key]) {
-        data = resultCaching[className]?.[key];
-      } else {
-        data = getClassWiseDataForProperty(key, className);
-      }
-
+      const data = getData(key, className);
       let numMapping: any = {};
       let greatestFreq: any = 0;
       let mode: number = 0;
@@ -121,12 +130,7 @@ export const DataProviderContexts = ({ children }: DataContextsProps) => {
 
     // to find median
     median: (key: string, className: string) => {
-      let data;
-      if (resultCaching[className]?.[key]) {
-        data = resultCaching[className]?.[key];
-      } else {
-        data = getClassWiseDataForProperty(key, className);
-      }
+      let data = getData(key, className);
       data = data.sort();
       const mid = Math.floor(data.length / 2);
       const result =
@@ -136,12 +140,7 @@ export const DataProviderContexts = ({ children }: DataContextsProps) => {
 
     // to find mean
     mean: (key: string, className: string) => {
-      let data;
-      if (resultCaching[className]?.[key]) {
-        data = resultCaching[className]?.[key];
-      } else {
-        data = getClassWiseDataForProperty(key, className);
-      }
+      const data = getData(key, className);
       const result =
         data.reduce((a: number, b: number) => a + b, 0) / data.length;
       return result.toFixed(3);
